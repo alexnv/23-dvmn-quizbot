@@ -23,7 +23,7 @@ def start(update: telegram.Update, context: CallbackContext):
 
 
 def handle_new_question_request(update: telegram.Update, context: CallbackContext, redis_db):
-    chat_id = str(update.effective_user.id)
+    chat_id = update.effective_user.id
     question = get_random_question()
     redis_db.set(chat_id, question)
     update.message.reply_text(text=question, reply_markup=reply_markup)
@@ -32,7 +32,7 @@ def handle_new_question_request(update: telegram.Update, context: CallbackContex
 
 
 def handle_solution_attempt(update: telegram.Update, context: CallbackContext, redis_db):
-    chat_id = str(update.effective_user.id)
+    chat_id = update.effective_user.id
     question = redis_db.get(chat_id)
     message_text = update.message.text
     if not question:
@@ -48,7 +48,7 @@ def handle_solution_attempt(update: telegram.Update, context: CallbackContext, r
 
 
 def handle_defeat(update: telegram.Update, context: CallbackContext, redis_db):
-    chat_id = str(update.effective_user.id)
+    chat_id = update.effective_user.id
     question = redis_db.get(chat_id)
     if not question:
         return NEW_QUESTION
