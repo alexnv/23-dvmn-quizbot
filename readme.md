@@ -3,10 +3,12 @@
 ## Примеры работы программы:
 
 Пример работы в Telegram:
+[Ссылка на бота](http://t.me/dvmnQuiz999Bot)
 
 ![tg](https://dvmn.org/media/filer_public/e9/eb/e9ebd8aa-17dd-4e82-9f00-aad21dc2d16c/examination_tg.gif)
 
 Пример рабоы в VK:
+[Ссылка на бота](https://vk.com/club221573776)
 
 ![vk](https://dvmn.org/media/filer_public/aa/c8/aac86f90-29b6-44bb-981e-02c8e11e69f7/examination_vk.gif)
 
