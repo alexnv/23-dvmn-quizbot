@@ -6,6 +6,7 @@ from environs import Env
 from telegram.ext import (CallbackContext, CommandHandler, Filters,
                           MessageHandler, Updater, ConversationHandler)
 
+from log_helpers import TelegramLogsHandler
 from quiz_db import get_random_question, get_answer
 from redis_helper import auth_redis
 
@@ -67,6 +68,12 @@ def main():
     env = Env()
     env.read_env()
     tg_token = env('TG_TOKEN')
+    tg_chat_id = env('TG_CHAT_ID')
+
+    bot = telegram.Bot(token=tg_token)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(TelegramLogsHandler(bot, tg_chat_id))
+    logger.info('Бот для логов запущен')
 
     redis_address = env('REDIS_ADDRESS')
     redis_port = env('REDIS_PORT')
@@ -82,23 +89,25 @@ def main():
     handle_solution_attempt_with_args = partial(handle_solution_attempt, redis_db=quiz_db)
     handle_new_question_request_with_args = partial(handle_new_question_request, redis_db=quiz_db)
     handle_defeat_with_args = partial(handle_defeat, redis_db=quiz_db)
-
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('start', start)],
-        states={
-            NEW_QUESTION: [MessageHandler(Filters.regex('Новый вопрос'), handle_new_question_request_with_args)],
-            SOLUTION_ATTEMPT: [
-                MessageHandler(Filters.regex('Сдаться'), handle_defeat_with_args),
-                MessageHandler(Filters.text, handle_solution_attempt_with_args)
-            ],
-        },
-        fallbacks=[MessageHandler(Filters.text, handle_other_text)]
-    )
-    dispatcher.add_handler(conv_handler)
-
-    updater.start_polling()
-
-    updater.idle()
+    while True:
+        try:
+            conv_handler = ConversationHandler(
+                entry_points=[CommandHandler('start', start)],
+                states={
+                    NEW_QUESTION: [
+                        MessageHandler(Filters.regex('Новый вопрос'), handle_new_question_request_with_args)],
+                    SOLUTION_ATTEMPT: [
+                        MessageHandler(Filters.regex('Сдаться'), handle_defeat_with_args),
+                        MessageHandler(Filters.text, handle_solution_attempt_with_args)
+                    ],
+                },
+                fallbacks=[MessageHandler(Filters.text, handle_other_text)]
+            )
+            dispatcher.add_handler(conv_handler)
+            updater.start_polling()
+            updater.idle()
+        except Exception as err:
+            logger.exception(f'Произошла ошибка: {err=}, {type(err)=}')
 
 
 if __name__ == '__main__':
