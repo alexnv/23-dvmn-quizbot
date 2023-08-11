@@ -1,13 +1,13 @@
 import logging
 from functools import partial
 
-import redis
 import telegram
 from environs import Env
 from telegram.ext import (CallbackContext, CommandHandler, Filters,
                           MessageHandler, Updater, ConversationHandler)
 
 from quiz_db import get_random_question, get_answer
+from redis_helper import auth_redis
 
 logger = logging.getLogger(__name__)
 
@@ -60,12 +60,6 @@ def handle_defeat(update: telegram.Update, context: CallbackContext, redis_db):
 def handle_other_text(update: telegram.Update, context: CallbackContext):
     update.message.reply_text('Нажми на одну из кнопок', reply_markup=reply_markup)
     return NEW_QUESTION
-
-
-def auth_redis(redis_address, redis_port, redis_user, redis_password):
-    redis_obj = redis.Redis(host=redis_address, port=redis_port, username=redis_user, password=redis_password,
-                            charset='utf-8', decode_responses=True)
-    return redis_obj
 
 
 def main():
