@@ -14,12 +14,12 @@ logger = logging.getLogger(__name__)
 
 NEW_QUESTION, SOLUTION_ATTEMPT = range(2)
 
-menu_keyboard = [['Новый вопрос', 'Сдаться'], ['Мой счет']]
-reply_markup = telegram.ReplyKeyboardMarkup(menu_keyboard)
+MENU_KEYBOARD = [['Новый вопрос', 'Сдаться'], ['Мой счет']]
+REPLY_MARKUP = telegram.ReplyKeyboardMarkup(MENU_KEYBOARD)
 
 
 def start(update: telegram.Update, context: CallbackContext):
-    update.message.reply_text(text='Привет, я бот для викторин!', reply_markup=reply_markup)
+    update.message.reply_text(text='Привет, я бот для викторин!', reply_markup=REPLY_MARKUP)
     return NEW_QUESTION
 
 
@@ -27,7 +27,7 @@ def handle_new_question_request(update: telegram.Update, context: CallbackContex
     chat_id = update.effective_user.id
     question = get_random_question()
     redis_db.set(chat_id, question)
-    update.message.reply_text(text=question, reply_markup=reply_markup)
+    update.message.reply_text(text=question, reply_markup=REPLY_MARKUP)
 
     return SOLUTION_ATTEMPT
 
@@ -41,10 +41,10 @@ def handle_solution_attempt(update: telegram.Update, context: CallbackContext, r
     answer = get_answer(question)
     if answer == message_text:
         update.message.reply_text('Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»',
-                                  reply_markup=reply_markup)
+                                  reply_markup=REPLY_MARKUP)
         return NEW_QUESTION
     else:
-        update.message.reply_text('Неправильно… Попробуешь ещё раз?', reply_markup=reply_markup)
+        update.message.reply_text('Неправильно… Попробуешь ещё раз?', reply_markup=REPLY_MARKUP)
         return SOLUTION_ATTEMPT
 
 
@@ -59,7 +59,7 @@ def handle_defeat(update: telegram.Update, context: CallbackContext, redis_db):
 
 
 def handle_other_text(update: telegram.Update, context: CallbackContext):
-    update.message.reply_text('Нажми на одну из кнопок', reply_markup=reply_markup)
+    update.message.reply_text('Нажми на одну из кнопок', reply_markup=REPLY_MARKUP)
     return NEW_QUESTION
 
 
