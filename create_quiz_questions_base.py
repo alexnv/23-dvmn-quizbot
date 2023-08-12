@@ -23,7 +23,7 @@ def get_quiz_bank(folder='quiz_questions'):
             for quiz_question in quiz_questions:
                 question, answer = get_question_and_answer(quiz_question)
                 quiz_bank[question] = answer
-    return (quiz_bank)
+    return quiz_bank
 
 
 def save_quiz_bank(quiz_bank, path):
