@@ -39,8 +39,21 @@ pip install -r requirements.txt
 * Перенесете необходимые файлы в папку `quiz_questions`, которую необходимо создать в корне проекта. (Вы можете создать
   свои вопросы для викторины, но их формат должен полностью соответствовать формату скачаных файлов).
 * Запустите создание quiz_bank.json файла командой:
+*
+
+```text
+usage: create_quiz_questions_base.py [-h] [-f FOLDER]
+
+Все представленные аргументы являются опциональными.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FOLDER, --folder FOLDER
+                        Введите путь к каталогу с файлами вопросов
 
 ```
+
+```shell
 python create_quiz_questions_base.py
 ```
 
@@ -48,12 +61,12 @@ python create_quiz_questions_base.py
 
 Запустить телеграм бота:
 
-```
+```shell
 python tg_bot.py
 ```
 
 Запустить бота в VK:
 
-```
+```shell
 python vk_bot.py
 ```

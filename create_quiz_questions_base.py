@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 
@@ -32,8 +33,22 @@ def save_quiz_bank(quiz_bank, path):
         file.write(quiz_bank)
 
 
+def create_parser():
+    parser = argparse.ArgumentParser(
+        description="Все представленные аргументы являются опциональными."
+    )
+    parser.add_argument(
+        "-f",
+        "--folder",
+        default="./quiz_questions",
+        help="Введите путь к каталогу с файлами вопросов"
+    )
+    return parser
+
+
 def main():
-    quiz_bank = get_quiz_bank()
+    arguments = create_parser().parse_args()
+    quiz_bank = get_quiz_bank(arguments.folder)
     save_quiz_bank(quiz_bank, 'quiz_bank.json')
 
 
